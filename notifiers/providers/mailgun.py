@@ -143,67 +143,7 @@ class MailGun(Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        if data.get("from_"):
-            data["from"] = data.pop("from_")
-
-        new_data = {
-            "to": data.pop("to"),
-            "from": data.pop("from"),
-            "domain": data.pop("domain"),
-            "api_key": data.pop("api_key"),
-        }
-
-        if data.get("message"):
-            new_data["text"] = data.pop("message")
-
-        if data.get("attachment"):
-            attachment = data.pop("attachment")
-            if isinstance(attachment, str):
-                attachment = [attachment]
-            new_data["attachment"] = attachment
-
-        if data.get("inline"):
-            inline = data.pop("inline")
-            if isinstance(inline, str):
-                inline = [inline]
-            new_data["inline"] = inline
-
-        for property_ in self.__properties_to_change:
-            if data.get(property_):
-                new_property = f"o:{property_}".replace("_", "-")
-                new_data[new_property] = data.pop(property_)
-
-        if data.get("headers"):
-            for key, value in data["headers"].items():
-                new_data[f"h:{key}"] = value
-            del data["headers"]
-
-        if data.get("data"):
-            for key, value in data["data"].items():
-                new_data[f"v:{key}"] = json.dumps(value)
-            del data["data"]
-
-        for key, value in data.items():
-            new_data[key] = value
-
-        return new_data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        base_url = data.pop("base_url")
-        domain = data.pop("domain")
-        url = f"{base_url}/v3/{domain}/messages"
-        auth = "api", data.pop("api_key")
-        files = []
-        if data.get("attachment"):
-            files += requests.file_list_for_request(data["attachment"], "attachment")
-        if data.get("inline"):
-            files += requests.file_list_for_request(data["inline"], "inline")
-
-        response, errors = requests.post(
-            url=url,
-            data=data,
-            auth=auth,
-            files=files,
-            path_to_errors=self.path_to_errors,
-        )
-        return self.create_response(data, response, errors)
+        pass

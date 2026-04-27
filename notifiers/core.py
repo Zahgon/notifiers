@@ -5,10 +5,22 @@ import importlib.util
 import logging
 from abc import ABC, abstractmethod
 
-import jsonschema
-import requests
-from importlib_metadata import entry_points
-from jsonschema.exceptions import best_match
+try:
+    import jsonschema
+    from jsonschema.exceptions import best_match
+except ImportError:
+    jsonschema = None  # type: ignore[assignment]
+    best_match = None  # type: ignore[assignment]
+
+try:
+    import requests
+except ImportError:
+    requests = None  # type: ignore[assignment]
+
+try:
+    from importlib_metadata import entry_points
+except ImportError:
+    entry_points = None  # type: ignore[assignment]
 
 from .exceptions import BadArguments, NoSuchNotifierError, NotificationError, SchemaError
 from .utils.helpers import dict_from_environs, merge_dicts
@@ -56,13 +68,7 @@ class Response:
 
         :raises: :class:`~notifiers.exceptions.NotificationError`: If response has errors
         """
-        if self.errors:
-            raise NotificationError(
-                provider=self.provider,
-                data=self.data,
-                errors=self.errors,
-                response=self.response,
-            )
+        pass
 
     @property
     def ok(self):
@@ -127,14 +133,7 @@ class SchemaResource(ABC):
         :param response: :class:`requests.Response` if exist
         :param errors: List of errors if relevant
         """
-        status = FAILURE_STATUS if errors else SUCCESS_STATUS
-        return Response(
-            status=status,
-            provider=self.name,
-            data=data,
-            response=response,
-            errors=errors,
-        )
+        pass
 
     def _merge_defaults(self, data: dict) -> dict:
         """
@@ -144,8 +143,7 @@ class SchemaResource(ABC):
         :param data: Notification data
         :return: A merged dict of provided data with added defaults
         """
-        log.debug("merging defaults %s into data %s", self.defaults, data)
-        return merge_dicts(data, self.defaults)
+        pass
 
     def _get_environs(self, prefix: str | None = None) -> dict:
         """
@@ -155,10 +153,7 @@ class SchemaResource(ABC):
         :param prefix: The environ prefix to use. If not supplied, uses the default
         :return: A dict of arguments and value retrieved from environs
         """
-        if not prefix:
-            log.debug("using default environ prefix")
-            prefix = DEFAULT_ENVIRON_PREFIX
-        return dict_from_environs(prefix, self.name, list(self.arguments.keys()))
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
         """
@@ -169,7 +164,7 @@ class SchemaResource(ABC):
         :param data: Notification data
         :return: Returns manipulated data, if there's a need for such manipulations.
         """
-        return data
+        pass
 
     def _validate_schema(self):
         """
@@ -186,12 +181,7 @@ class SchemaResource(ABC):
         :param data: Data to validate
         :raises: :class:`~notifiers.exceptions.BadArguments`
         """
-        log.debug("validating provided data")
-        e = best_match(self.validator.iter_errors(data))
-        if e:
-            custom_error_key = f"error_{e.validator}"
-            msg = e.schema[custom_error_key] if e.schema.get(custom_error_key) else e.message
-            raise BadArguments(validation_error=msg, provider=self.name, data=data)
+        pass
 
     def _validate_data_dependencies(self, data: dict) -> dict:
         """
@@ -202,7 +192,7 @@ class SchemaResource(ABC):
         :return: Return data if its valid
         :raises: :class:`~notifiers.exceptions.NotifierException`
         """
-        return data
+        pass
 
     def _process_data(self, **data) -> dict:
         """
@@ -212,19 +202,10 @@ class SchemaResource(ABC):
         :param data: The raw data passed by the notifiers client
         :return: Processed data
         """
-        env_prefix = data.pop("env_prefix", None)
-        environs = self._get_environs(env_prefix)
-        if environs:
-            data = merge_dicts(data, environs)
-
-        data = self._merge_defaults(data)
-        self._validate_data(data)
-        data = self._validate_data_dependencies(data)
-        return self._prepare_data(data)
+        pass
 
     def __init__(self):
-        self.validator = jsonschema.Draft4Validator(self.schema, format_checker=format_checker)
-        self._validate_schema()
+        pass
 
 
 class Provider(SchemaResource, ABC):
@@ -282,11 +263,7 @@ class Provider(SchemaResource, ABC):
         :raises: :class:`~notifiers.exceptions.NotificationError` if ``raise_on_errors`` is set to True and response
          contained errors
         """
-        data = self._process_data(**kwargs)
-        rsp = self._send_notification(data)
-        if raise_on_errors:
-            rsp.raise_on_errors()
-        return rsp
+        pass
 
 
 class ProviderResource(SchemaResource, ABC):
@@ -310,7 +287,10 @@ class ProviderResource(SchemaResource, ABC):
 
 
 # Avoid premature import
-from .providers import _all_providers  # noqa: E402
+try:
+    from .providers import _all_providers  # noqa: E402
+except (ImportError, AttributeError):
+    _all_providers = {}  # type: ignore[assignment]
 
 
 def get_notifier(provider_name: str, strict: bool = False) -> Provider:
@@ -322,13 +302,7 @@ def get_notifier(provider_name: str, strict: bool = False) -> Provider:
     :return: :class:`Provider` or None
     :raises ValueError: In case ``strict`` is True and provider not found
     """
-    providers = get_all_providers()
-    if provider_name in providers:
-        log.debug("found a match for '%s', returning", provider_name)
-        return _all_providers[provider_name]()
-    if strict:
-        raise NoSuchNotifierError(name=provider_name)
-    return None
+    pass
 
 
 def load_provider_from_points(entry_points: str) -> Provider:
@@ -350,28 +324,7 @@ def load_provider_from_points(entry_points: str) -> Provider:
         >>> provider_class = load_provider_from_points(entry_points)
         >>> provider = provider_class()
     """
-    if not entry_points or ":" not in entry_points:
-        raise ValueError(f"Invalid entry point format: {entry_points}. Expected format: 'module_path:class_name'")
-
-    try:
-        module_path, class_name = entry_points.split(":", 1)
-    except ValueError as e:
-        raise ValueError(f"Multiple colons found in entry point: {entry_points}. Expected format: 'module_path:class_name'") from e
-
-    try:
-        module = importlib.import_module(module_path.strip())
-    except ImportError as e:
-        raise ImportError(f"Failed to import module '{module_path}': {e!s}") from e
-
-    try:
-        provider_class = getattr(module, class_name.strip())
-    except AttributeError as e:
-        raise AttributeError(f"Class '{class_name}' not found in module '{module_path}'") from e
-
-    if not (isinstance(provider_class, type) and issubclass(provider_class, Provider)):
-        raise TypeError(f"'{module_path}:{class_name}' must be a subclass of Provider")
-
-    return provider_class
+    pass
 
 
 def get_providers_from_entry_points(group_name: str = "notifiers") -> dict:
@@ -389,7 +342,7 @@ def get_providers_from_entry_points(group_name: str = "notifiers") -> dict:
         >>> get_providers_from_entry_points("notifiers")
         {"plugin1": "package.module:PluginClass", "plugin2": "package2.module:OtherPluginClass"}
     """
-    return {point.name: load_provider_from_points(point.value) for point in entry_points(group=group_name)}
+    pass
 
 
 def get_all_providers() -> dict:
@@ -398,15 +351,12 @@ def get_all_providers() -> dict:
     :return: Dict: A dictionary containing the entry point names as keys and their corresponding values as values.
 
     """
-    default_providers = _all_providers.copy()
-    entry_point_providers = get_providers_from_entry_points()
-    default_providers.update(entry_point_providers)
-    return default_providers
+    pass
 
 
 def all_providers() -> list:
     """Returns a list of all :class:`~notifiers.core.Provider` names"""
-    return list(get_all_providers().keys())
+    pass
 
 
 def notify(provider_name: str, **kwargs) -> Response:
@@ -419,4 +369,4 @@ def notify(provider_name: str, **kwargs) -> Response:
     :raises: :class:`~notifiers.exceptions.NoSuchNotifierError` If ``provider_name`` is unknown,
      will raise notification error
     """
-    return get_notifier(provider_name=provider_name, strict=True).notify(**kwargs)
+    pass

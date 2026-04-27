@@ -10,7 +10,7 @@ class PushbulletMixin:
     path_to_errors = "error", "message"
 
     def _get_headers(self, token: str) -> dict:
-        return {"Access-Token": token}
+        pass
 
 
 class PushbulletDevices(PushbulletMixin, ProviderResource):
@@ -94,19 +94,7 @@ class Pushbullet(PushbulletMixin, Provider):
         pass
 
     def _prepare_data(self, data: dict) -> dict:
-        data["body"] = data.pop("message")
-
-        # Workaround since `type` is a reserved word
-        if data.get("type_"):
-            data["type"] = data.pop("type_")
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        headers = self._get_headers(data.pop("token"))
-        response, errors = requests.post(
-            self.base_url,
-            json=data,
-            headers=headers,
-            path_to_errors=self.path_to_errors,
-        )
-        return self.create_response(data, response, errors)
+        pass

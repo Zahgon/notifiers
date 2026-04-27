@@ -117,29 +117,10 @@ class Pushover(PushoverMixin, Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        data["user"] = list_to_commas(data["user"])
-        if data.get("device"):
-            data["device"] = list_to_commas(data["device"])
-        if data.get("html") is not None:
-            data["html"] = int(data["html"])
-        if data.get("attachment") and not isinstance(data["attachment"], list):
-            data["attachment"] = [data["attachment"]]
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        url = self.base_url + self.message_url
-        headers = {}
-        files = []
-        if data.get("attachment"):
-            files = requests.file_list_for_request(data["attachment"], "attachment")
-        response, errors = requests.post(
-            url,
-            data=data,
-            headers=headers,
-            files=files,
-            path_to_errors=self.path_to_errors,
-        )
-        return self.create_response(data, response, errors)
+        pass
 
     @property
     def metadata(self) -> dict:

@@ -126,18 +126,7 @@ class Slack(Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        text = data.pop("message")
-        data["text"] = text
-        if data.get("icon_emoji"):
-            icon_emoji = data["icon_emoji"]
-            if not icon_emoji.startswith(":"):
-                icon_emoji = f":{icon_emoji}"
-            if not icon_emoji.endswith(":"):
-                icon_emoji += ":"
-            data["icon_emoji"] = icon_emoji
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        url = data.pop("webhook_url")
-        response, errors = requests.post(url, json=data)
-        return self.create_response(data, response, errors)
+        pass

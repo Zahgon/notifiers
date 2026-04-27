@@ -16,25 +16,7 @@ class JoinMixin:
     @staticmethod
     def _join_request(url: str, data: dict) -> tuple:
         # Can 't use generic requests util since API doesn't always return error status
-        errors = None
-        try:
-            response = requests.get(url, params=data)
-            response.raise_for_status()
-            rsp = response.json()
-            if not rsp["success"]:
-                errors = [rsp["errorMessage"]]
-        except requests.RequestException as e:
-            if e.response is not None:
-                response = e.response
-                try:
-                    errors = [response.json()["errorMessage"]]
-                except json.decoder.JSONDecodeError:
-                    errors = [response.text]
-            else:
-                response = None
-                errors = [str(e)]
-
-        return response, errors
+        pass
 
 
 class JoinDevices(JoinMixin, ProviderResource):
@@ -174,15 +156,8 @@ class Join(JoinMixin, Provider):
         pass
 
     def _prepare_data(self, data: dict) -> dict:
-        if data.get("deviceIds"):
-            data["deviceIds"] = list_to_commas(data["deviceIds"])
-        if data.get("deviceNames"):
-            data["deviceNames"] = list_to_commas(data["deviceNames"])
-        data["text"] = data.pop("message")
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
         # Can 't use generic requests util since API doesn't always return error status
-        url = self.base_url + self.push_url
-        response, errors = self._join_request(url, data)
-        return self.create_response(data, response, errors)
+        pass

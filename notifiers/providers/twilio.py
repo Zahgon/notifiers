@@ -92,20 +92,7 @@ class Twilio(Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        if data.get("message"):
-            data["body"] = data.pop("message")
-        new_data = {
-            "auth_token": data.pop("auth_token"),
-            "account_sid": data.pop("account_sid"),
-        }
-        for key, value in data.items():
-            camel_case_key = snake_to_camel_case(key)
-            new_data[camel_case_key] = value
-        return new_data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        account_sid = data.pop("account_sid")
-        url = self.base_url.format(account_sid)
-        auth = (account_sid, data.pop("auth_token"))
-        response, errors = requests.post(url, data=data, auth=auth, path_to_errors=self.path_to_errors)
-        return self.create_response(data, response, errors)
+        pass

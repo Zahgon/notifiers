@@ -82,30 +82,14 @@ class DingTalk(Provider):
 
     def _prepare_url(self) -> str:
         """返回基础URL, access_token将通过params传递"""
-        return self.base_url
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
         """
         构造钉钉机器人要求的消息格式
         文档: https://open.dingtalk.com/document/orgapp-server/custom-robot-access
         """
-        payload = {"msgtype": data["msg_data"]["msgtype"], data["msg_data"]["msgtype"]: data["msg_data"][data["msg_data"]["msgtype"]]}
-
-        if "at" in data:
-            payload["at"] = data["at"]
-
-        # 安全签名处理
-        if "sign" in data and "timestamp" in data:
-            payload["sign"] = data["sign"]
-            payload["timestamp"] = data["timestamp"]
-
-        return payload
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        url = self._prepare_url()
-        params = {"access_token": data["access_token"]}
-        payload = self._prepare_data(data)
-
-        response = requests.post(url, params=params, json=payload, headers={"Content-Type": "application/json", "Accept": "application/json"})
-
-        return self._create_response(response)
+        pass

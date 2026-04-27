@@ -100,13 +100,7 @@ class SMTP(Provider):
     @staticmethod
     def _get_mimetype(attachment: Path) -> tuple[str, str]:
         """Taken from https://docs.python.org/3/library/email.examples.html"""
-        ctype, encoding = mimetypes.guess_type(str(attachment))
-        if ctype is None or encoding is not None:
-            # No guess could be made, or the file is encoded (compressed), so
-            # use a generic bag-of-bits type.
-            ctype = "application/octet-stream"
-        maintype, subtype = ctype.split("/", 1)
-        return maintype, subtype
+        pass
 
     def __init__(self):
         super().__init__()
@@ -118,69 +112,21 @@ class SMTP(Provider):
         pass
 
     def _prepare_data(self, data: dict) -> dict:
-        if isinstance(data["to"], list):
-            data["to"] = list_to_commas(data["to"])
-        # A workaround since `from` is a reserved word
-        if data.get("from_"):
-            data["from"] = data.pop("from_")
-        return data
+        pass
 
     @staticmethod
     def _build_email(data: dict) -> EmailMessage:
-        email = EmailMessage()
-        email["To"] = data["to"]
-        if "cc" in data:
-            email["CC"] = data.get("cc")
-        if "bcc" in data:
-            email["Bcc"] = data.get("bcc")
-        email["From"] = data["from"]
-        email["Subject"] = data["subject"]
-        email["Date"] = formatdate(localtime=True)
-        content_type = "html" if data["html"] else "plain"
-        email.add_alternative(data["message"], subtype=content_type)
-        return email
+        pass
 
     def _add_attachments(self, attachments: list[str], email: EmailMessage):
-        for attachment_ in attachments:
-            attachment = Path(attachment_)
-            maintype, subtype = self._get_mimetype(attachment)
-            email.add_attachment(
-                attachment.read_bytes(),
-                maintype=maintype,
-                subtype=subtype,
-                filename=attachment.name,
-            )
+        pass
 
     def _connect_to_server(self, data: dict):
-        smtp_server_cls = smtplib.SMTP_SSL if data["ssl"] else smtplib.SMTP
-        self.smtp_server = smtp_server_cls(data["host"], data["port"])
-        self.configuration = self._get_configuration(data)
-        if data["tls"] and not data["ssl"]:
-            self.smtp_server.ehlo()
-            self.smtp_server.starttls()
-
-        if data["login"] and data.get("username"):
-            self.smtp_server.login(data["username"], data["password"])
+        pass
 
     @staticmethod
     def _get_configuration(data: dict) -> tuple:
-        return data["host"], data["port"], data.get("username")
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        errors = None
-        try:
-            configuration = self._get_configuration(data)
-            if not self.configuration or not self.smtp_server or self.configuration != configuration:
-                self._connect_to_server(data)
-            email = self._build_email(data)
-            if data.get("attachments"):
-                self._add_attachments(data["attachments"], email)
-            self.smtp_server.send_message(email)
-        except (
-            SMTPServerDisconnected,
-            SMTPSenderRefused,
-            OSError,
-            SMTPAuthenticationError,
-        ) as e:
-            errors = [str(e)]
-        return self.create_response(data, errors=errors)
+        pass

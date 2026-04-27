@@ -33,11 +33,7 @@ class PopcornNotify(Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        if isinstance(data["recipients"], str):
-            data["recipients"] = [data["recipients"]]
-        data["recipients"] = list_to_commas(data["recipients"])
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        response, errors = requests.post(url=self.base_url, json=data, path_to_errors=self.path_to_errors)
-        return self.create_response(data, response, errors)
+        pass

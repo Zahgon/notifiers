@@ -11,10 +11,7 @@ def text_to_bool(value: str) -> bool:
 
     :param value: Value to check
     """
-    try:
-        return value.lower() in {"y", "yes", "t", "true", "on", "1"}
-    except (ValueError, AttributeError):
-        return value is not None
+    pass
 
 
 def merge_dicts(target_dict: dict, merge_dict: dict) -> dict:
@@ -26,11 +23,7 @@ def merge_dicts(target_dict: dict, merge_dict: dict) -> dict:
     :param merge_dict: The data that should be merged into the target data
     :return: A dict of merged data
     """
-    log.debug("merging dict %s into %s", merge_dict, target_dict)
-    for key, value in merge_dict.items():
-        if key not in target_dict:
-            target_dict[key] = value
-    return target_dict
+    pass
 
 
 def dict_from_environs(prefix: str, name: str, args: list) -> dict:
@@ -43,13 +36,7 @@ def dict_from_environs(prefix: str, name: str, args: list) -> dict:
     :param args: List of args to iterate over
     :return: A dict of found environ values
     """
-    environs = {}
-    log.debug("starting to collect environs using prefix: '%s'", prefix)
-    for arg in args:
-        environ = f"{prefix}{name}_{arg}".upper()
-        if os.environ.get(environ):
-            environs[arg] = os.environ[environ]
-    return environs
+    pass
 
 
 def snake_to_camel_case(value: str) -> str:
@@ -59,8 +46,7 @@ def snake_to_camel_case(value: str) -> str:
     :param value: The value to convert
     :return: A CamelCase value
     """
-    log.debug("trying to convert %s to camel case", value)
-    return "".join(word.capitalize() for word in value.split("_"))
+    pass
 
 
 def valid_file(path: str) -> bool:
@@ -70,6 +56,4 @@ def valid_file(path: str) -> bool:
     :param path: The path to verify
     :return: **True** if path exist and is a file
     """
-    path = Path(path).expanduser()
-    log.debug("checking if %s is a valid file", path)
-    return path.exists() and path.is_file()
+    pass

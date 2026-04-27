@@ -18,7 +18,7 @@ class GitterMixin:
         :param token: App token
         :return: Authentication header dict
         """
-        return {"Authorization": f"Bearer {token}"}
+        pass
 
 
 class GitterRooms(GitterMixin, ProviderResource):
@@ -64,17 +64,11 @@ class Gitter(GitterMixin, Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        data["text"] = data.pop("message")
-        return data
+        pass
 
     @property
     def metadata(self) -> dict:
         pass
 
     def _send_notification(self, data: dict) -> Response:
-        room_id = data.pop("room_id")
-        url = self.base_url + self.message_url.format(room_id=room_id)
-
-        headers = self._get_headers(data.pop("token"))
-        response, errors = requests.post(url, json=data, headers=headers, path_to_errors=self.path_to_errors)
-        return self.create_response(data, response, errors)
+        pass

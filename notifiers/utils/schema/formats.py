@@ -2,23 +2,13 @@ import email
 import re
 from datetime import datetime
 
-import jsonschema
-
-from notifiers.utils.helpers import valid_file
-
-# Taken from https://gist.github.com/codehack/6350492822e52b7fa7fe
-ISO8601 = re.compile(
-    r"^(?P<full>("
-    r"(?P<year>\d{4})([/-]?"
-    r"(?P<mon>(0[1-9])|(1[012]))([/-]?"
-    r"(?P<mday>(0[1-9])|([12]\d)|(3[01])))?)?(?:T"
-    r"(?P<hour>([01][0-9])|(?:2[0123]))(:?"
-    r"(?P<min>[0-5][0-9])(:?"
-    r"(?P<sec>[0-5][0-9]([,.]\d{1,10})?))?)?"
-    r"(?:Z|([\-+](?:([01][0-9])|(?:2[0123]))(:?(?:[0-5][0-9]))?))?)?))$"
-)
-E164 = re.compile(r"^\+?[1-9]\d{1,14}$")
-format_checker = jsonschema.FormatChecker()
+try:
+    import jsonschema
+    format_checker = jsonschema.FormatChecker()
+except ImportError:
+    class _NullChecker:
+        checks = lambda self, *a, **kw: lambda f: f
+    format_checker = _NullChecker()  # type: ignore[assignment]
 
 
 @format_checker.checks("iso8601", raises=ValueError)

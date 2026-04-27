@@ -74,16 +74,7 @@ class VictorOps(Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        annotations = data.pop("annotations", {})
-        for annotation, value in annotations.items():
-            data[annotation] = value
-
-        additional_keys = data.pop("additional_keys", {})
-        for additional_key, value in additional_keys.items():
-            data[additional_key] = value
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        url = data.pop("rest_url")
-        response, errors = requests.post(url, json=data)
-        return self.create_response(data, response, errors)
+        pass

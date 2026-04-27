@@ -123,46 +123,10 @@ class Statuspage(StatuspageMixin, Provider):
     }
 
     def _validate_data_dependencies(self, data: dict) -> dict:
-        scheduled_properties = [prop for prop in data if prop.startswith("scheduled")]
-        scheduled = any(data.get(prop) is not None for prop in scheduled_properties)
-
-        backfill_properties = [prop for prop in data if prop.startswith("backfill")]
-        backfill = any(data.get(prop) is not None for prop in backfill_properties)
-
-        if scheduled and backfill:
-            raise BadArguments(
-                provider=self.name,
-                validation_error="Cannot set both 'backfill' and 'scheduled' incident properties in the same notification!",
-            )
-
-        status = data.get("status")
-        if scheduled and status and status not in self.scheduled_statuses:
-            raise BadArguments(
-                provider=self.name,
-                validation_error=f"Status '{status}' is a realtime incident status! Please choose one of {self.scheduled_statuses}",
-            )
-        if backfill and status:
-            raise BadArguments(
-                provider=self.name,
-                validation_error="Cannot set 'status' when setting 'backfill'!",
-            )
-
-        return data
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
-        new_data = {
-            "incident[name]": data.pop("message"),
-            "api_key": data.pop("api_key"),
-            "page_id": data.pop("page_id"),
-        }
-        for key, value in data.items():
-            if isinstance(value, bool):
-                value = "t" if value else "f"  # noqa: PLW2901
-            new_data[f"incident[{key}]"] = value
-        return new_data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        url = self.base_url.format(page_id=data.pop("page_id")) + self.incidents_url
-        params = {"api_key": data.pop("api_key")}
-        response, errors = requests.post(url, data=data, params=params, path_to_errors=self.path_to_errors)
-        return self.create_response(data, response, errors)
+        pass

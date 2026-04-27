@@ -15,7 +15,7 @@ class NotifyMixin:
         :param token: Send token
         :return: Authentication header dict
         """
-        return {"Authorization": f"Bearer {token}"}
+        pass
 
 
 class Notify(NotifyMixin, Provider):
@@ -45,20 +45,7 @@ class Notify(NotifyMixin, Provider):
     }
 
     def _prepare_data(self, data: dict) -> dict:
-        return data
+        pass
 
     def _send_notification(self, data: dict) -> Response:
-        url = self.base_url.format(base_url=data.pop("base_url"))
-        token = data.pop("token", None)
-        headers = self._get_headers(token) if token else {}
-        response, errors = requests.post(
-            url,
-            json={
-                "message": data.pop("message"),
-                "title": data.pop("title", None),
-                "tags": data.pop("tags", []),
-            },
-            headers=headers,
-            path_to_errors=self.path_to_errors,
-        )
-        return self.create_response(data, response, errors)
+        pass
