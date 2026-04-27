@@ -38,25 +38,7 @@ class GitterRooms(GitterMixin, ProviderResource):
     }
 
     def _get_resource(self, data: dict) -> list:
-        headers = self._get_headers(data["token"])
-        filter_ = data.get("filter")
-        params = {"q": filter_} if filter_ else {}
-        response, errors = requests.get(
-            self.base_url,
-            headers=headers,
-            params=params,
-            path_to_errors=self.path_to_errors,
-        )
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        rsp = response.json()
-        return rsp["results"] if filter_ else rsp
+        pass
 
 
 class Gitter(GitterMixin, Provider):
@@ -87,9 +69,7 @@ class Gitter(GitterMixin, Provider):
 
     @property
     def metadata(self) -> dict:
-        metadata = super().metadata
-        metadata["message_url"] = self.message_url
-        return metadata
+        pass
 
     def _send_notification(self, data: dict) -> Response:
         room_id = data.pop("room_id")

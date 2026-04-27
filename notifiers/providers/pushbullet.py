@@ -27,17 +27,7 @@ class PushbulletDevices(PushbulletMixin, ProviderResource):
     }
 
     def _get_resource(self, data: dict) -> list:
-        headers = self._get_headers(data["token"])
-        response, errors = requests.get(self.devices_url, headers=headers, path_to_errors=self.path_to_errors)
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        return response.json()["devices"]
+        pass
 
 
 class Pushbullet(PushbulletMixin, Provider):
@@ -101,7 +91,7 @@ class Pushbullet(PushbulletMixin, Provider):
 
     @property
     def defaults(self) -> dict:
-        return {"type": "note"}
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
         data["body"] = data.pop("message")

@@ -66,7 +66,7 @@ class Response:
 
     @property
     def ok(self):
-        return self.errors is None
+        pass
 
 
 class SchemaResource(ABC):
@@ -97,26 +97,22 @@ class SchemaResource(ABC):
 
         :return: JSON schema of the provider
         """
-        if not self._merged_schema:
-            log.debug("merging required dict into schema for %s", self.name)
-            self._merged_schema = self._schema.copy()
-            self._merged_schema.update(self._required)
-        return self._merged_schema
+        pass
 
     @property
     def arguments(self) -> dict:
         """Returns all the provider argument as declared in the JSON schema"""
-        return dict(self.schema["properties"].items())
+        pass
 
     @property
     def required(self) -> dict:
         """Returns a dict of the relevant required parts of the schema"""
-        return self._required
+        pass
 
     @property
     def defaults(self) -> dict:
         """A dict of default provider values if such is needed"""
-        return {}
+        pass
 
     def create_response(
         self,
@@ -181,11 +177,7 @@ class SchemaResource(ABC):
 
         :raises: :class:`~notifiers.exceptions.SchemaError`
         """
-        try:
-            log.debug("validating provider schema")
-            self.validator.check_schema(self.schema)
-        except jsonschema.SchemaError as e:
-            raise SchemaError(schema_error=e.message, provider=self.name, data=self.schema) from e
+        pass
 
     def _validate_data(self, data: dict):
         """
@@ -263,12 +255,12 @@ class Provider(SchemaResource, ABC):
         """
         Returns a dict of the provider metadata as declared. Override if needed.
         """
-        return {"base_url": self.base_url, "site_url": self.site_url, "name": self.name}
+        pass
 
     @property
     def resources(self) -> list:
         """Return a list of names of relevant :class:`~notifiers.core.ProviderResource` objects"""
-        return list(self._resources.keys())
+        pass
 
     @abstractmethod
     def _send_notification(self, data: dict) -> Response:

@@ -26,17 +26,7 @@ class TelegramUpdates(TelegramMixin, ProviderResource):
     }
 
     def _get_resource(self, data: dict) -> list:
-        url = self.base_url.format(token=data["token"]) + self.updates_endpoint
-        response, errors = requests.get(url, path_to_errors=self.path_to_errors)
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        return response.json()["result"]
+        pass
 
 
 class Telegram(TelegramMixin, Provider):

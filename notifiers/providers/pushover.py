@@ -24,18 +24,7 @@ class PushoverSounds(PushoverResourceMixin, ProviderResource):
     sounds_url = "sounds.json"
 
     def _get_resource(self, data: dict):
-        url = self.base_url + self.sounds_url
-        params = {"token": data["token"]}
-        response, errors = requests.get(url, params=params, path_to_errors=self.path_to_errors)
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        return list(response.json()["sounds"].keys())
+        pass
 
 
 class PushoverLimits(PushoverResourceMixin, ProviderResource):
@@ -43,18 +32,7 @@ class PushoverLimits(PushoverResourceMixin, ProviderResource):
     limits_url = "apps/limits.json"
 
     def _get_resource(self, data: dict):
-        url = self.base_url + self.limits_url
-        params = {"token": data["token"]}
-        response, errors = requests.get(url, params=params, path_to_errors=self.path_to_errors)
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        return response.json()
+        pass
 
 
 class Pushover(PushoverMixin, Provider):
@@ -165,6 +143,4 @@ class Pushover(PushoverMixin, Provider):
 
     @property
     def metadata(self) -> dict:
-        m = super().metadata
-        m["message_url"] = self.message_url
-        return m
+        pass

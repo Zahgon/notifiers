@@ -30,18 +30,7 @@ class StatuspageComponents(StatuspageMixin, ProviderResource):
     }
 
     def _get_resource(self, data: dict) -> dict:
-        url = self.base_url.format(page_id=data["page_id"]) + self.components_url
-        params = {"api_key": data.pop("api_key")}
-        response, errors = requests.get(url, params=params, path_to_errors=self.path_to_errors)
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        return response.json()
+        pass
 
 
 class Statuspage(StatuspageMixin, Provider):

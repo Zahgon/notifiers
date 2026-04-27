@@ -52,7 +52,7 @@ class Zulip(Provider):
 
     @property
     def defaults(self) -> dict:
-        return {"type": "stream"}
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
         base_url = self.base_url.format(domain=data.pop("domain")) if data.get("domain") else data.pop("server")

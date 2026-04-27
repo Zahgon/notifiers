@@ -12,8 +12,4 @@ class iCloud(email.SMTP):
 
     @property
     def defaults(self) -> dict:
-        data = super().defaults
-        data["host"] = self.base_url
-        data["port"] = 587
-        data["tls"] = True
-        return data
+        pass

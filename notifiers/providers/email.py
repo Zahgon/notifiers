@@ -115,16 +115,7 @@ class SMTP(Provider):
 
     @property
     def defaults(self) -> dict:
-        return {
-            "subject": DEFAULT_SUBJECT,
-            "from": DEFAULT_FROM,
-            "host": DEFAULT_SMTP_HOST,
-            "port": 25,
-            "tls": False,
-            "ssl": False,
-            "html": False,
-            "login": True,
-        }
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
         if isinstance(data["to"], list):

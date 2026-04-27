@@ -51,17 +51,7 @@ class JoinDevices(JoinMixin, ProviderResource):
     }
 
     def _get_resource(self, data: dict):
-        url = self.base_url + self.devices_url
-        response, errors = self._join_request(url, data)
-        if errors:
-            raise ResourceError(
-                errors=errors,
-                resource=self.resource_name,
-                provider=self.name,
-                data=data,
-                response=response,
-            )
-        return response.json()["records"]
+        pass
 
 
 class Join(JoinMixin, Provider):
@@ -181,7 +171,7 @@ class Join(JoinMixin, Provider):
 
     @property
     def defaults(self) -> dict:
-        return {"deviceId": "group.all"}
+        pass
 
     def _prepare_data(self, data: dict) -> dict:
         if data.get("deviceIds"):
